@@ -1,0 +1,108 @@
+## Why Bundle
+
+1. Optimize assets (images, svg, fonts)
+2. Group multiple files into a single cachable file
+3. Reduce bundle size
+4. Different outputs for different environments
+5. Transpile and Transform code
+6. Working with modules (pre ES-modules)
+   
+---
+
+## Popular bundling tools
+
+1. Webpack
+2. Rollup
+3. Parcel
+4. Gulp
+
+---
+
+## Bundeling concepts
+
+1. Tree shaking
+2. Uglify
+3. Chunk splitting
+4. Code transformation
+
+---
+
+# Webpack
+
+---
+
+## Installing webpack
+
+```sh
+yarn init
+
+yarn add -D webpack webpack-cli
+
+yarn add lodash
+```
+
+---
+
+create code (index.html + index.js)
+
+```sh
+npx webpack
+```
+
+----
+
+## Configuration File
+
+`webpack.config.js`
+
+```javascript
+const path = require('path');
+
+module.exports = {
+  entry: './src/index.js',
+  output: {
+    filename: 'main.js',
+    path: path.resolve(__dirname, 'dist'),
+  },
+};
+```
+
+```sh
+npx webpack --config webpack.config.js
+```
+
+---
+
+# Assat Management
+
+---
+
+```sh
+yarn add --D style-loader css-loader
+```
+
+```javascript
+const path = require('path');
+
+  module.exports = {
+    entry: './src/index.js',
+    output: {
+      filename: 'bundle.js',
+      path: path.resolve(__dirname, 'dist'),
+    },
++   module: {
++     rules: [
++       {
++         test: /\.css$/,
++         use: [
++           'style-loader',
++           'css-loader',
++         ],
++       },
++     ],
++   },
+  };
+```
+
+
+
