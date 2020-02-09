@@ -129,6 +129,10 @@ The app needs to allow users to:
 
 ---
 
+![Login Flow](./auth0-flow.png)
+
+---
+
 ## Connecting to our WebApp
 
 (inspired by [official react quickstart](https://auth0.com/docs/quickstart/spa/react))
@@ -345,3 +349,88 @@ export default PrivateRoute;
 ```
 
 ---
+
+# Authorization
+
+### After defining Who the user is - Descide what she can DO...
+
+---
+
+![role-based access control](./role-based-access-control.jpg)
+
+
+---
+
+> Remember - Role is a "metadata" ontop from the "authentication" token
+
+---
+
+## Adding a Auth0 `Rule`
+
+[New Rule](https://manage.auth0.com/dashboard/eu/tikalk/rules/new)
+
+---
+
+## Rule for adding role
+
+```js
+function (user, context, callback) {
+
+  // Roles should only be set to verified users.
+  if (!user.email || !user.email_verified) {
+    return callback(null, user, context);
+  }
+
+  user.app_metadata = user.app_metadata || {};
+  // You can add a Role based on what you want
+  // In this case I check domain
+  const addRolesToUser = function (user) {
+    const endsWith = '@tikalk.com';
+		if (user.email === 'assaf@tikalk.com') {
+      return ['admin'];
+    }
+    if (user.email && (user.email.substring(user.email.length - endsWith.length, user.email.length) === endsWith)) {
+      return ['user'];
+    }
+    return [];
+  };
+
+  const roles = addRolesToUser(user);
+
+  user.app_metadata.roles = roles;
+  
+  console.log('user', user);
+  
+  auth0.users.updateAppMetadata(user.user_id, user.app_metadata)
+    .then(function () {
+      context.idToken['https://shows.tikalk.com/roles'] = user.app_metadata.roles;
+      callback(null, user, context);
+    })
+    .catch(function (err) {
+      callback(err);
+    });
+}
+```
+
+---
+
+## Use a hook
+
+```js
+import { useAuth0 } from "../react-auth0-spa";
+
+export const useRole = (allowedRoles) => {
+    const { user } = useAuth0();
+    const userRoles = user['https://shows.tikalk.com/roles'];
+    return userRoles.some(r=> allowedRoles.includes(r))
+}
+```
+
+---
+
+## Summary
+
+- Authentication = Determining the user's `identity`
+- Authorization = Determining the user's `privilages` (roles)
+- Token-based auth is prefered since it supports stateless services
+- There are many ways to implement authentication, Auth context is one of them 
