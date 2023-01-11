@@ -12,7 +12,7 @@
     "gatsby-remark-copy-linked-files": "^2.1.30",
     "gatsby-remark-images": "^3.1.32",
     "gatsby-source-filesystem": "^2.1.38",
-    "gatsby-transformer-remark": "^2.6.37",
+    "gatsby-transformer-remark": "^5.25.1",
     "gatsby-transformer-sharp": "^2.3.5",
     "highlight.js": "^9.16.2",
     "react": "^16.12.0",
